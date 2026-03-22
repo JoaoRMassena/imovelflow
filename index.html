@@ -428,10 +428,32 @@ async function logout(){
   await sb.auth.signOut();location.reload();
 }
 async function initAuth(){
+  // Trata o hash de retorno do OAuth (ex: #access_token=...)
+  if(window.location.hash&&window.location.hash.includes('access_token')){
+    const{data,error}=await sb.auth.getSession();
+    if(data?.session){
+      currentUser=data.session.user;
+      // Limpa o hash da URL sem recarregar
+      history.replaceState(null,'',window.location.pathname);
+      showApp();
+      return;
+    }
+  }
+
+  // Sessão normal (já estava logado)
   const{data:{session}}=await sb.auth.getSession();
-  if(session){currentUser=session.user;showApp()}
-  else{document.getElementById('login-screen').classList.remove('hide');document.getElementById('ls').classList.add('hide')}
-  sb.auth.onAuthStateChange((_,session)=>{
+  if(session){
+    currentUser=session.user;
+    showApp();
+    return;
+  }
+
+  // Não logado — mostra tela de login
+  document.getElementById('login-screen').classList.remove('hide');
+  document.getElementById('ls').classList.add('hide');
+
+  // Escuta mudanças de sessão (login/logout)
+  sb.auth.onAuthStateChange((_event,session)=>{
     if(session&&!currentUser){currentUser=session.user;showApp()}
     else if(!session&&currentUser){currentUser=null;location.reload()}
   });
