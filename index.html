@@ -422,40 +422,32 @@ const sb = createClient(
 let currentUser = null;
 
 async function loginGoogle(){
-  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+  const url = window.location.origin + window.location.pathname;
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:url}});
 }
 async function logout(){
-  await sb.auth.signOut();location.reload();
+  await sb.auth.signOut();
+  location.reload();
 }
-async function initAuth(){
-  // Trata o hash de retorno do OAuth (ex: #access_token=...)
-  if(window.location.hash&&window.location.hash.includes('access_token')){
-    const{data,error}=await sb.auth.getSession();
-    if(data?.session){
-      currentUser=data.session.user;
-      // Limpa o hash da URL sem recarregar
-      history.replaceState(null,'',window.location.pathname);
-      showApp();
-      return;
+function initAuth(){
+  // onAuthStateChange é a forma mais confiável — dispara em todos os casos:
+  // INITIAL_SESSION → página carregou (com ou sem sessão)
+  // SIGNED_IN       → acabou de logar, inclusive via redirect OAuth
+  // SIGNED_OUT      → deslogou
+  sb.auth.onAuthStateChange((event, session) => {
+    if(event === 'INITIAL_SESSION' || event === 'SIGNED_IN'){
+      if(session && session.user){
+        currentUser = session.user;
+        if(window.location.hash) history.replaceState(null, '', window.location.pathname);
+        showApp();
+      } else if(event === 'INITIAL_SESSION'){
+        document.getElementById('login-screen').classList.remove('hide');
+        document.getElementById('ls').classList.add('hide');
+      }
+    } else if(event === 'SIGNED_OUT'){
+      currentUser = null;
+      location.reload();
     }
-  }
-
-  // Sessão normal (já estava logado)
-  const{data:{session}}=await sb.auth.getSession();
-  if(session){
-    currentUser=session.user;
-    showApp();
-    return;
-  }
-
-  // Não logado — mostra tela de login
-  document.getElementById('login-screen').classList.remove('hide');
-  document.getElementById('ls').classList.add('hide');
-
-  // Escuta mudanças de sessão (login/logout)
-  sb.auth.onAuthStateChange((_event,session)=>{
-    if(session&&!currentUser){currentUser=session.user;showApp()}
-    else if(!session&&currentUser){currentUser=null;location.reload()}
   });
 }
 function showApp(){
