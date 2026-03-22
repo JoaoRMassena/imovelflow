@@ -187,9 +187,36 @@ tr:hover td{background:var(--w0)}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--Gm);display:inline-block;margin-right:5px}
 .sync-dot.saving{background:var(--Am);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── LOGIN ── */
+.login-screen{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.login-screen.hide{display:none}
+.login-card{background:#fff;border:1px solid var(--w1);border-radius:16px;padding:40px 36px;max-width:380px;width:100%;box-shadow:var(--shm);text-align:center}
+.login-logo{font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:var(--acc);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--ink4);margin-bottom:32px}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 20px;border:1px solid var(--w1);border-radius:var(--rs);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);transition:all .14s}
+.google-btn:hover{background:var(--w0);border-color:var(--w2)}
+.login-footer{font-size:11px;color:var(--ink4);margin-top:20px;line-height:1.6}
+.rb-logout{margin-top:auto}
+.user-info{font-size:12px;color:var(--ink4);display:flex;align-items:center;gap:8px}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--Bl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--acc)}
 </style>
 </head>
 <body>
+
+
+<!-- TELA DE LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">ImóvelFlow</div>
+    <div class="login-sub">Acesso exclusivo ao seu sistema</div>
+    <button class="google-btn" onclick="loginGoogle()">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Entrar com Google
+    </button>
+    <div class="login-footer">Somente você tem acesso aos seus dados.<br>Nenhuma informação é compartilhada.</div>
+  </div>
+</div>
 
 <!-- LOADING -->
 <div class="loading-screen" id="ls">
@@ -198,7 +225,7 @@ tr:hover td{background:var(--w0)}
   <div class="ls-sub">Carregando seus dados...</div>
 </div>
 
-<div class="shell">
+<div class="shell" id="app" style="display:none">
   <!-- RAIL -->
   <nav class="rail">
     <div class="rail-logo">IF</div>
@@ -210,6 +237,7 @@ tr:hover td{background:var(--w0)}
     <button class="rb" onclick="nav('hist',this)"><span>☰</span><span class="tip">Histórico</span></button>
     <div class="rsep"></div>
     <button class="rb" onclick="nav('rel',this)"><span>📄</span><span class="tip">Relatório Mensal</span></button>
+    <button class="rb rb-logout" onclick="logout()" style="margin-top:auto"><span>⏻</span><span class="tip">Sair</span></button>
   </nav>
 
   <div class="panel">
@@ -218,10 +246,10 @@ tr:hover td{background:var(--w0)}
         <div class="pg-ttl" id="pg-ttl">Painel</div>
         <span id="sync-status" style="font-size:12px;color:var(--ink4)"><span class="sync-dot"></span>Conectado</span>
       </div>
-      <div class="filters">
+      <div style="display:flex;align-items:center;gap:12px"><div class="user-info"><div class="user-avatar" id="user-avatar">?</div><span id="user-name"></span></div><div class="filters">
         <select id="gp" style="width:155px;font-size:13px" onchange="rPainel()"><option value="">Todos os prédios</option></select>
         <select id="gm" style="width:125px;font-size:13px" onchange="rPainel()"><option value="">Todos os meses</option></select>
-      </div>
+      </div></div>
     </div>
 
     <div class="content">
@@ -268,32 +296,18 @@ tr:hover td{background:var(--w0)}
       <!-- EXTRATO -->
       <div class="view" id="v-extrato">
         <div class="sh" style="margin-bottom:14px"><div class="st">Enviar Extrato</div></div>
-        <p style="font-size:13px;color:var(--ink4);margin-bottom:16px">Envie PDF, foto/print ou cole o texto. A IA identifica as transações automaticamente.</p>
+        <p style="font-size:13px;color:var(--ink4);margin-bottom:16px">Cole o texto copiado do seu extrato bancário. O sistema identifica entradas e saídas automaticamente — seus dados não saem do seu computador.</p>
         <div id="np1" class="tip-box" style="display:none">⚠️ Cadastre ao menos um prédio antes. <span style="cursor:pointer;text-decoration:underline" onclick="nav('predios',null)">Cadastrar</span></div>
-        <div class="vtabs">
-          <button class="vtab on" onclick="extT('ea',this)">Arquivo (PDF / Foto)</button>
-          <button class="vtab" onclick="extT('et',this)">Texto copiado</button>
+        <div class="field"><label class="lbl">Texto do extrato</label>
+          <textarea id="txt-e" rows="9" placeholder="Cole aqui o texto copiado do seu banco. Exemplos:&#10;&#10;05/07 PIX RECEBIDO JOAO SILVA 1800,00&#10;08/07 DEB SABESP 340,50&#10;10/07 TED ENVIADO MANUTENCAO 600,00"></textarea>
         </div>
-        <div id="ea">
-          <div class="upz" id="upz" ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)">
-            <input type="file" id="fi" accept=".pdf,image/*" onchange="pFile(this.files[0])">
-            <div style="font-size:32px;margin-bottom:9px">📄</div>
-            <div style="font-size:14px;font-weight:600;margin-bottom:3px">Arraste ou clique para selecionar</div>
-            <div style="font-size:13px;color:var(--ink4)">PDF ou foto/print do extrato</div>
-          </div>
-        </div>
-        <div id="et" style="display:none">
-          <div class="field"><label class="lbl">Cole o texto do extrato</label><textarea id="txt-e" rows="8" placeholder="05/07 TED RECEBIDO JOAO SILVA 1800,00&#10;08/07 SABESP 340,50&#10;..."></textarea></div>
-          <button class="btn bp" onclick="pTxt()">✦ Analisar com IA</button>
-        </div>
-        <div id="ia-a" style="margin-top:16px;display:none">
-          <div class="ia-box"><span class="ia-pill">IA</span><div id="ia-msg"></div></div>
-          <div id="tx-a" style="display:none">
-            <div class="sh"><div class="st" id="tx-ttl"></div><div style="display:flex;gap:6px"><button class="btn bg2 bsm" onclick="salAll(1)">Todos</button><button class="btn bg2 bsm" onclick="salAll(0)">Nenhum</button></div></div>
-            <div class="field" style="max-width:260px"><label class="lbl">Prédio</label><select id="tx-p"><option value="">— Selecione —</option></select></div>
-            <div style="display:flex;flex-direction:column;gap:6px" id="tx-list"></div>
-            <div style="margin-top:13px"><button class="btn bp" onclick="importar()">✓ Importar selecionados</button></div>
-          </div>
+        <button class="btn bp" onclick="pTxt()">🔍 Identificar transações</button>
+        <div id="tx-a" style="display:none;margin-top:16px">
+          <div style="background:var(--Bl);border:1px solid var(--Bm);border-radius:var(--rs);padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--B)" id="tx-resumo"></div>
+          <div class="sh"><div class="st" id="tx-ttl"></div><div style="display:flex;gap:6px"><button class="btn bg2 bsm" onclick="salAll(1)">Todos</button><button class="btn bg2 bsm" onclick="salAll(0)">Nenhum</button></div></div>
+          <div class="field" style="max-width:260px"><label class="lbl">Prédio</label><select id="tx-p"><option value="">— Selecione —</option></select></div>
+          <div style="display:flex;flex-direction:column;gap:6px" id="tx-list"></div>
+          <div style="margin-top:13px"><button class="btn bp" onclick="importar()">✓ Importar selecionados</button></div>
         </div>
       </div>
 
@@ -392,12 +406,45 @@ tr:hover td{background:var(--w0)}
 </div></div>
 
 <script>
-// ── SUPABASE ──────────────────────────────────────────
+// ════════════════════════════════════════════════
+// CONFIGURAÇÃO — cole seu Google Client ID abaixo
+// Exemplo: '123456789-abc.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = '591234319481-rh6r9f9i0026v19p866pa5ft13sipsn8.apps.googleusercontent.com';
+// ════════════════════════════════════════════════
+
 const { createClient } = supabase;
 const sb = createClient(
   'https://vbolhjwmbuthjxhxlvko.supabase.co',
   'sb_publishable_NbRC9i_wYBaOVihWqJ95Mw_lXNne7_5'
 );
+
+// ── AUTH ──────────────────────────────────────────────
+let currentUser = null;
+
+async function loginGoogle(){
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+}
+async function logout(){
+  await sb.auth.signOut();location.reload();
+}
+async function initAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){currentUser=session.user;showApp()}
+  else{document.getElementById('login-screen').classList.remove('hide');document.getElementById('ls').classList.add('hide')}
+  sb.auth.onAuthStateChange((_,session)=>{
+    if(session&&!currentUser){currentUser=session.user;showApp()}
+    else if(!session&&currentUser){currentUser=null;location.reload()}
+  });
+}
+function showApp(){
+  const name=currentUser.user_metadata?.full_name||currentUser.email||'';
+  const init=name.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase()||'?';
+  document.getElementById('user-avatar').textContent=init;
+  document.getElementById('user-name').textContent=name.split(' ')[0];
+  document.getElementById('login-screen').classList.add('hide');
+  document.getElementById('app').style.display='flex';
+  loadAll();
+}
 
 // ── ESTADO ────────────────────────────────────────────
 let P=[], U=[], L=[], PG=[];
@@ -424,6 +471,7 @@ function setSyncing(s){
 
 // ── CARREGAR DADOS ────────────────────────────────────
 async function loadAll(){
+  document.getElementById('ls').classList.remove('hide');
   try{
     const[rp,ru,rl,rpg]=await Promise.all([
       sb.from('predios').select('*').order('criado_em'),
@@ -708,52 +756,58 @@ async function salM(){
   alert('✓ Lançamento salvo!');
 }
 
-// ── EXTRATO / IA ──────────────────────────────────────
-function dov(e){e.preventDefault();document.getElementById('upz').classList.add('dg')}
-function dlv(){document.getElementById('upz').classList.remove('dg')}
-function drp(e){e.preventDefault();dlv();if(e.dataTransfer.files[0])pFile(e.dataTransfer.files[0])}
-async function pFile(file){
-  if(!file||!P.length){if(!P.length){alert('Cadastre um prédio.');nav('predios',null);}return}
-  const b64=await new Promise((r,rj)=>{const rd=new FileReader();rd.onload=()=>r(rd.result.split(',')[1]);rd.onerror=rj;rd.readAsDataURL(file)});
-  const isPDF=file.type==='application/pdf',mt=isPDF?'application/pdf':(file.type||'image/jpeg');
-  await callIA([isPDF?{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}}:{type:'image',source:{type:'base64',media_type:mt,data:b64}},{type:'text',text:pIA()}]);
-}
-async function pTxt(){
-  const txt=document.getElementById('txt-e').value.trim();if(!txt||!P.length){return}
-  await callIA([{type:'text',text:`Extrato:\n\n${txt}\n\n${pIA()}`}]);
-}
-function pIA(){return`Analise este extrato bancário e extraia TODAS as transações. Retorne SOMENTE JSON válido:\n{"transacoes":[{"data":"YYYY-MM-DD","descricao":"desc","valor":0.00,"tipo":"entrada ou saida","categoria_sugerida":"Aluguel|Condomínio|Água|Luz|Manutenção|Limpeza|Segurança|IPTU|Seguro|Administração|Multa/Juros|Outros recebimentos|Outros"}]}\nSe a data não estiver clara use ${hoje()}.`}
-async function callIA(content){
-  document.getElementById('ia-a').style.display='block';document.getElementById('tx-a').style.display='none';
-  document.getElementById('ia-msg').innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:6px 0"><span class="spin"></span><span style="font-size:14px;font-weight:500">Analisando com IA...</span></div>';
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content}]})});
-    const data=await r.json();
-    const raw=data.content.map(b=>b.text||'').join('');
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    txArr=(parsed.transacoes||[]).map((t,i)=>({...t,_id:i,_sel:true}));
-    rTx();
-    document.getElementById('ia-msg').innerHTML=`<span style="color:var(--G);font-weight:600">✓ ${txArr.length} transação(ões) encontrada(s).</span>`;
-    document.getElementById('tx-a').style.display='block';
-    document.getElementById('tx-ttl').textContent=txArr.length+' transações encontradas';
-    document.getElementById('tx-p').innerHTML='<option value="">— Selecione —</option>'+P.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
-  }catch(e){document.getElementById('ia-msg').innerHTML='<span style="color:var(--R)">Erro ao analisar. Tente um arquivo mais legível.</span>'}
-}
-function rTx(){
-  const allC=[...CE,...CS];
-  document.getElementById('tx-list').innerHTML=txArr.map(t=>`<div class="tx-row${t._sel?' sel':''}" id="tx${t._id}"><div class="chk${t._sel?' on':''}" onclick="tgl(${t._id})">${t._sel?'✓':''}</div><div class="tx-info"><div class="tx-d">${t.descricao}</div><div class="tx-m">${fmtD(t.data)} · <select id="tc${t._id}">${allC.map(c=>`<option${c===t.categoria_sugerida?' selected':''}>${c}</option>`).join('')}</select></div></div><div class="txv ${t.tipo==='entrada'?'inv':'outv'}">${t.tipo==='entrada'?'+':'-'}${fmt(t.valor)}</div></div>`).join('');
-}
-function tgl(id){const t=txArr.find(x=>x._id===id);t._sel=!t._sel;const el=document.getElementById('tx'+id);const ch=el.querySelector('.chk');el.classList.toggle('sel',t._sel);ch.classList.toggle('on',t._sel);ch.textContent=t._sel?'✓':''}
-function salAll(v){txArr.forEach(t=>t._sel=!!v);rTx()}
-async function importar(){
-  const pid=document.getElementById('tx-p').value;if(!pid){alert('Selecione o prédio.');return}
-  const sel=txArr.filter(t=>t._sel);if(!sel.length){alert('Selecione ao menos uma transação.');return}
-  setSyncing(true);
-  const rows=sel.map(t=>({tipo:t.tipo,predio_id:parseInt(pid),categoria:document.getElementById('tc'+t._id)?.value||t.categoria_sugerida,valor:t.valor,data:t.data,descricao:t.descricao}));
-  const{data}=await sb.from('lancamentos').insert(rows).select();
-  if(data)L.unshift(...data);
-  setSyncing(false);popAll();document.getElementById('ia-a').style.display='none';document.getElementById('fi').value='';document.getElementById('txt-e').value='';
-  alert(`✓ ${sel.length} lançamento(s) importado(s)!`);nav('painel',null);
+
+
+
+// ── EXTRATO SEM IA (processamento local) ─────────────
+function pTxt(){
+  const txt=document.getElementById('txt-e').value.trim();
+  if(!txt){alert('Cole o texto do extrato.');return}
+  if(!P.length){alert('Cadastre um prédio.');nav('predios',null);return}
+  const linhas=txt.split('\n').map(l=>l.trim()).filter(l=>l.length>3);
+  const anoAtual=new Date().getFullYear();
+  const resultados=[];
+  const wSaida=['deb','debit','pagto','pagamento','saque','ted enviado','pix enviado','boleto','energia','agua','sabesp','enel','cemig','copel','coelba','celpe','light','iptu','seguro','manut','admin','limpeza'];
+  const wEntrada=['cred','credit','receb','ted receb','pix receb','deposito','aluguel','rendimento'];
+  for(const linha of linhas){
+    const dm=linha.match(/(\d{2})[\/-](\d{2})(?:[\/-](\d{2,4}))?/);
+    if(!dm)continue;
+    const vals=linha.match(/[\d]+[\.,]\d{2}/g);
+    if(!vals)continue;
+    const valor=parseFloat(vals[vals.length-1].replace(',','.'));
+    if(!valor||valor<=0||valor>9999999)continue;
+    let dia=dm[1],mes=dm[2],ano=dm[3]||String(anoAtual);
+    if(ano.length===2)ano='20'+ano;
+    const data=`${ano}-${mes.padStart(2,'0')}-${dia.padStart(2,'0')}`;
+    let desc=linha.replace(/(\d{2})[\/-](\d{2})(?:[\/-]\d{2,4})?/,'').replace(/[\d]+[\.,]\d{2}/g,'').replace(/[R$]/g,'').replace(/\s+/g,' ').trim();
+    const lb=linha.toLowerCase();
+    let tipo='entrada';
+    for(const w of wSaida){if(lb.includes(w)){tipo='saida';break}}
+    for(const w of wEntrada){if(lb.includes(w)){tipo='entrada';break}}
+    let cat='Outros';
+    if(tipo==='entrada'){
+      if(lb.includes('aluguel'))cat='Aluguel';
+      else if(lb.includes('cond'))cat='Condomínio';
+      else if(lb.match(/multa|juros/))cat='Multa/Juros';
+      else cat='Outros recebimentos';
+    }else{
+      if(lb.match(/agua|sabesp|sanepar|embasa/))cat='Água';
+      else if(lb.match(/luz|energia|enel|cemig|copel|coelba|celpe|light/))cat='Luz';
+      else if(lb.match(/manut|reparo/))cat='Manutenção';
+      else if(lb.includes('limpez'))cat='Limpeza';
+      else if(lb.includes('segur')&&!lb.includes('segurança'))cat='Seguro';
+      else if(lb.includes('iptu'))cat='IPTU';
+      else if(lb.includes('admin'))cat='Administração';
+    }
+    resultados.push({_id:resultados.length,_sel:true,data,descricao:desc||'Lançamento',valor,tipo,categoria_sugerida:cat});
+  }
+  txArr=resultados;
+  if(!txArr.length){alert('Nenhuma transação reconhecida. Verifique se o texto tem datas (dd/mm) e valores.');return}
+  rTx();
+  document.getElementById('tx-a').style.display='block';
+  document.getElementById('tx-ttl').textContent=txArr.length+' transações encontradas';
+  document.getElementById('tx-resumo').textContent='✓ '+txArr.filter(t=>t.tipo==='entrada').length+' entradas e '+txArr.filter(t=>t.tipo==='saida').length+' saídas identificadas. Revise, ajuste as categorias e selecione o prédio.';
+  document.getElementById('tx-p').innerHTML='<option value="">— Selecione —</option>'+P.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
 }
 
 // ── HISTÓRICO ─────────────────────────────────────────
@@ -812,7 +866,7 @@ function oM(id){document.getElementById(id).classList.add('on')}
 function cM(id){document.getElementById(id).classList.remove('on')}
 
 // ── INIT ──────────────────────────────────────────────
-loadAll();
+initAuth();
 </script>
 </body>
 </html>
