@@ -200,6 +200,64 @@ tr:hover td{background:var(--w0)}
 .rb-logout{margin-top:auto}
 .user-info{font-size:12px;color:var(--ink4);display:flex;align-items:center;gap:8px}
 .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--Bl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--acc)}
+
+/* ── TOUR ── */
+.tour-overlay{position:fixed;inset:0;z-index:500;pointer-events:none}
+.tour-overlay.on{pointer-events:all}
+.tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;transition:opacity .3s}
+.tour-card{position:fixed;z-index:501;background:#fff;border-radius:16px;padding:24px 26px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:up .25s ease}
+.tour-step-pill{font-size:11px;font-weight:700;color:var(--acc);background:var(--Bl);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;letter-spacing:.4px}
+.tour-icon{font-size:32px;margin-bottom:10px}
+.tour-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin-bottom:8px;letter-spacing:-.2px}
+.tour-text{font-size:14px;color:var(--ink3);line-height:1.65;margin-bottom:18px}
+.tour-footer{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tour-dots{display:flex;gap:5px}
+.tour-dot{width:7px;height:7px;border-radius:50%;background:var(--w2);transition:all .2s}
+.tour-dot.on{background:var(--acc);width:18px;border-radius:4px}
+.tour-btns{display:flex;gap:8px}
+.tour-skip{background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink4);padding:6px 10px;border-radius:6px}
+.tour-skip:hover{background:var(--w0)}
+.tour-next{background:var(--acc);color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;transition:all .14s}
+.tour-next:hover{background:var(--acch)}
+.tour-highlight{position:fixed;z-index:499;border-radius:10px;box-shadow:0 0 0 4px var(--acc),0 0 0 8px rgba(26,66,168,.2);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1)}
+.help-btn{position:fixed;bottom:22px;right:22px;width:44px;height:44px;border-radius:50%;background:var(--acc);color:#fff;border:none;cursor:pointer;font-size:20px;font-weight:700;box-shadow:0 4px 16px rgba(26,66,168,.35);z-index:100;transition:all .15s;display:none;align-items:center;justify-content:center}
+.help-btn.show{display:flex}
+.help-btn:hover{transform:scale(1.1);background:var(--acch)}
+
+/* ── TUTORIAL ── */
+.tut-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(4px)}
+.tut-overlay.on{display:flex}
+.tut-card{background:#fff;border-radius:18px;padding:0;width:92%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.2);overflow:hidden;animation:up .2s ease}
+.tut-head{padding:28px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.tut-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.tut-close{background:none;border:none;cursor:pointer;color:var(--ink4);font-size:18px;padding:4px;line-height:1;transition:color .13s}
+.tut-close:hover{color:var(--ink)}
+.tut-body{padding:16px 28px 24px}
+.tut-title{font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin-bottom:8px;letter-spacing:-.2px}
+.tut-desc{font-size:14px;color:var(--ink3);line-height:1.7;margin-bottom:18px}
+.tut-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.tut-step{display:flex;align-items:flex-start;gap:11px;font-size:13px;line-height:1.6}
+.tut-step-num{width:22px;height:22px;border-radius:50%;background:var(--acc);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tut-step-txt{color:var(--ink2)}
+.tut-step-txt strong{font-weight:600;color:var(--ink)}
+.tut-footer{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-top:1px solid var(--w1);background:var(--w0)}
+.tut-dots{display:flex;gap:6px}
+.tut-dot{width:7px;height:7px;border-radius:50%;background:var(--w2);transition:all .2s;cursor:pointer}
+.tut-dot.on{background:var(--acc);width:20px;border-radius:4px}
+.tut-nav{display:flex;gap:8px;align-items:center}
+.tut-skip{font-size:12px;color:var(--ink4);cursor:pointer;background:none;border:none;font-family:inherit;padding:4px 8px;border-radius:6px;transition:all .13s}
+.tut-skip:hover{color:var(--ink);background:var(--w1)}
+.help-btn{position:fixed;bottom:22px;right:22px;width:42px;height:42px;border-radius:50%;background:var(--acc);color:#fff;border:none;cursor:pointer;font-size:18px;box-shadow:0 4px 16px rgba(26,66,168,.35);transition:all .15s;z-index:100;display:flex;align-items:center;justify-content:center}
+.help-btn:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(26,66,168,.45)}
+
+
+.pp-parcial{background:var(--Al);color:var(--A)}.pp-parcial:hover{background:var(--Am)}
+.divida-badge{font-size:11px;font-weight:600;color:var(--R);background:var(--Rl);border:1px solid var(--Rm);border-radius:6px;padding:3px 8px;margin-top:6px;display:inline-block}
+.credito-badge{font-size:11px;font-weight:600;color:var(--G);background:var(--Gl);border:1px solid var(--Gm);border-radius:6px;padding:3px 8px;margin-top:6px;display:inline-block}
+/* Modal histórico de pagamentos */
+.hist-pag-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--w1);font-size:13px}
+.hist-pag-row:last-child{border-bottom:none}
+
 </style>
 </head>
 <body>
@@ -458,6 +516,8 @@ function showApp(){
   document.getElementById('login-screen').classList.add('hide');
   document.getElementById('app').style.display='flex';
   loadAll();
+  verificarPrimeiroAcesso();
+  tourCheckFirst();
 }
 
 // ── ESTADO ────────────────────────────────────────────
@@ -622,23 +682,29 @@ function rInq(){
   const mAtual=ym();
   if(!units.length){body.innerHTML='<div class="es">Nenhum inquilino.<br><br><button class="btn bp bsm" onclick="openMU()">+ Adicionar</button></div>';return}
   const rows=units.map(u=>{
-    const pg=PG.find(p=>p.inquilino_id==u.id&&p.mes_ano===mAtual);
-    const paid=pg?.pago||false;
+    const stMes=statusPagMes(u.id, mAtual);
+    const divida=calcDivida(u.id);
     const despUnit=L.filter(l=>l.inquilino_id==u.id&&l.tipo==='saida');
     const totalD=despUnit.reduce((a,l)=>a+Number(l.valor),0);
+    // Botão de status do mês atual
+    let btnCls='ppend', btnTxt='⏳ Pendente';
+    if(stMes.status==='pago'){btnCls='pp';btnTxt='✓ Pago';}
+    else if(stMes.status==='parcial'){btnCls='pp-parcial';btnTxt=`⚠ Falta ${fmt(stMes.faltando)}`;}
     return`<div class="uc">
       <div class="uc-top"><span class="uc-num">${u.unidade}</span>
-        <button class="pgbtn ${paid?'pp':'ppend'}" onclick="togPag(${u.id})">${paid?'✓ Pago':'⏳ Pendente'}</button>
+        <button class="pgbtn ${btnCls}" onclick="togPag(${u.id})">${btnTxt}</button>
       </div>
       <div class="uc-name">${u.nome}</div>
       ${u.telefone?`<div class="uc-info">📱 ${u.telefone}</div>`:''}
       ${u.email?`<div class="uc-info">✉ ${u.email}</div>`:''}
       ${u.dia_vencimento?`<div class="uc-info">Vence dia ${u.dia_vencimento}</div>`:''}
       <div class="uc-alug">${fmt(u.aluguel)}<span style="font-size:11px;font-weight:400;color:var(--ink4)">/mês</span></div>
+      ${divida.total>0?`<div class="divida-badge">⚠ Dívida acumulada: ${fmt(divida.total)}</div>`:''}
       ${totalD>0?`<div style="font-size:12px;color:var(--ink3);margin-top:3px">${despUnit.length} despesa(s) — ${fmt(totalD)}</div>`:''}
       <div class="uc-btns">
         <button class="btn bg2 bxs" onclick="editU(${u.id})">Editar</button>
         <button class="btn bp bxs" onclick="openMD(${u.id})">+ Despesa</button>
+        <button class="btn bg2 bxs" onclick="abrirHistPag(${u.id})">📋 Histórico</button>
         <button class="btn bd bxs" onclick="remU(${u.id})">Remover</button>
       </div>
     </div>`;
@@ -647,14 +713,17 @@ function rInq(){
 }
 
 async function togPag(uid){
-  const mAtual=ym();
+  const mAtual=ym();const u=gU(uid);if(!u)return;
+  const aluguel=Number(u.aluguel);
   const pg=PG.find(p=>p.inquilino_id==uid&&p.mes_ano===mAtual);
   setSyncing(true);
   if(pg){
-    await sb.from('pagamentos').update({pago:!pg.pago}).eq('id',pg.id);
-    pg.pago=!pg.pago;
+    const novoPago=!pg.pago;
+    const novoValor=novoPago?aluguel:0;
+    await sb.from('pagamentos').update({pago:novoPago,valor_pago:novoValor}).eq('id',pg.id);
+    pg.pago=novoPago;pg.valor_pago=novoValor;
   }else{
-    const{data}=await sb.from('pagamentos').insert({inquilino_id:uid,mes_ano:mAtual,pago:true}).select().single();
+    const{data}=await sb.from('pagamentos').insert({inquilino_id:parseInt(uid),mes_ano:mAtual,pago:true,valor_pago:aluguel}).select().single();
     if(data)PG.push(data);
   }
   setSyncing(false);rInq();rPainel();
@@ -736,10 +805,29 @@ function rPainel(){
   document.getElementById('sss').textContent=list.filter(l=>l.tipo==='saida').length+' pagamentos';
   document.getElementById('sls').textContent=sal>=0?'Resultado positivo':'Resultado negativo';
   const mAtual=ym();
-  const pend=U.filter(u=>{if(fp&&u.predio_id!=fp)return false;const pg=PG.find(p=>p.inquilino_id==u.id&&p.mes_ano===mAtual);return!(pg?.pago)});
+  const pend=U.filter(u=>{if(fp&&u.predio_id!=fp)return false;const st=statusPagMes(u.id,mAtual);return st.status!=='pago';});
   document.getElementById('sp').textContent=pend.length;
   const pendEl=document.getElementById('pend-list');
-  pendEl.innerHTML=pend.length===0?'<div style="text-align:center;padding:20px;color:var(--ink4);font-size:13px">✓ Todos pagaram este mês!</div>':'<div style="display:flex;flex-direction:column;gap:7px">'+pend.map(u=>{const pr=gP(u.predio_id);return`<div style="background:var(--Rl);border:1px solid var(--Rm);border-radius:var(--rs);padding:9px 12px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600">${u.nome}</div><div style="font-size:11px;color:var(--ink4)">${u.unidade}${pr?' · '+pr.nome:''}</div></div><div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--R)">${fmt(u.aluguel)}</div></div>`}).join('')+'</div>';
+  pendEl.innerHTML=pend.length===0?'<div style="text-align:center;padding:20px;color:var(--ink4);font-size:13px">✓ Todos pagaram este mês!</div>':'<div style="display:flex;flex-direction:column;gap:7px">'+pend.map(u=>{
+    const pr=gP(u.predio_id);
+    const st=statusPagMes(u.id,mAtual);
+    const divida=calcDivida(u.id);
+    const cor=st.status==='parcial'?'var(--Am)':'var(--Rm)';
+    const bgCor=st.status==='parcial'?'var(--Al)':'var(--Rl)';
+    const valorExibir=st.status==='parcial'?st.faltando:Number(u.aluguel);
+    const label=st.status==='parcial'?'Faltando':'Pendente';
+    return`<div style="background:${bgCor};border:1px solid ${cor};border-radius:var(--rs);padding:9px 12px;cursor:pointer" onclick="abrirHistPag(${u.id})">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:13px;font-weight:600">${u.nome}</div>
+        <div style="font-size:11px;color:var(--ink4)">${u.unidade}${pr?' · '+pr.nome:''}</div></div>
+        <div style="text-align:right">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--R)">${fmt(valorExibir)}</div>
+          <div style="font-size:10px;color:var(--ink4)">${label}</div>
+        </div>
+      </div>
+      ${divida.total>0?`<div style="font-size:11px;color:var(--R);margin-top:4px">Dívida acumulada: ${fmt(divida.total)}</div>`:''}
+    </div>`;
+  }).join('')+'</div>';
   const fp2=fp?P.filter(p=>p.id==fp):P;
   const ppEl=document.getElementById('pp');ppEl.innerHTML='';
   fp2.forEach(p=>{
@@ -762,12 +850,71 @@ async function salM(){
   if(!pid||!v||v<=0||!d){alert('Preencha todos os campos obrigatórios.');return}
   const uid=document.getElementById('mu').value;
   const uObj=uid?gU(uid):null;
-  const obj={tipo:document.getElementById('mt').value,predio_id:parseInt(pid),inquilino_id:uid?parseInt(uid):null,categoria:document.getElementById('mc').value,unidade:uObj?uObj.unidade:null,valor:v,data:d,descricao:document.getElementById('mdesc').value.trim()};
+  const tipo=document.getElementById('mt').value;
+  const cat=document.getElementById('mc').value;
+  const obj={tipo,predio_id:parseInt(pid),inquilino_id:uid?parseInt(uid):null,categoria:cat,unidade:uObj?uObj.unidade:null,valor:v,data:d,descricao:document.getElementById('mdesc').value.trim()};
   setSyncing(true);
   const{data}=await sb.from('lancamentos').insert(obj).select().single();
   if(data)L.unshift(data);
-  setSyncing(false);popAll();document.getElementById('mv').value='';document.getElementById('mdesc').value='';
-  alert('✓ Lançamento salvo!');
+
+  let msg='✓ Lançamento salvo!';
+
+  // Lógica de pagamento inteligente
+  if(tipo==='entrada' && cat==='Aluguel' && uid){
+    const u=gU(uid);
+    const aluguel=Number(u.aluguel);
+    let restante=v; // valor disponível para abater dívidas
+
+    // Busca meses com dívida (do mais antigo para o mais recente)
+    const mesesDevendo=PG
+      .filter(p=>p.inquilino_id==uid && !p.pago)
+      .sort((a,b)=>a.mes_ano.localeCompare(b.mes_ano));
+
+    // Primeiro abate dívidas de meses anteriores
+    for(const pgDev of mesesDevendo){
+      if(restante<=0) break;
+      const faltava=aluguel - Number(pgDev.valor_pago||0);
+      if(faltava<=0) continue;
+      if(restante>=faltava){
+        // Quita este mês
+        restante-=faltava;
+        await sb.from('pagamentos').update({pago:true,valor_pago:aluguel}).eq('id',pgDev.id);
+        pgDev.pago=true; pgDev.valor_pago=aluguel;
+        msg+=` Dívida de ${fmtM(pgDev.mes_ano)} quitada.`;
+      }else{
+        // Pagamento parcial neste mês de dívida
+        const novoValor=Number(pgDev.valor_pago||0)+restante;
+        await sb.from('pagamentos').update({pago:false,valor_pago:novoValor}).eq('id',pgDev.id);
+        pgDev.valor_pago=novoValor;
+        restante=0;
+      }
+    }
+
+    // Com o saldo restante, aplica ao mês do lançamento
+    if(restante>0){
+      const mesLanc=d.slice(0,7);
+      const pgMes=PG.find(p=>p.inquilino_id==uid&&p.mes_ano===mesLanc);
+      if(pgMes){
+        const novoValor=Number(pgMes.valor_pago||0)+restante;
+        const quitado=novoValor>=aluguel;
+        await sb.from('pagamentos').update({pago:quitado,valor_pago:Math.min(novoValor,aluguel)}).eq('id',pgMes.id);
+        pgMes.pago=quitado; pgMes.valor_pago=Math.min(novoValor,aluguel);
+        if(quitado) msg+=' Aluguel do mês pago ✓';
+        else msg+=` Pagamento parcial: faltam ${fmt(aluguel-novoValor)}`;
+      }else{
+        const quitado=restante>=aluguel;
+        const vp=Math.min(restante,aluguel);
+        const{data:pgData}=await sb.from('pagamentos').insert({inquilino_id:parseInt(uid),mes_ano:d.slice(0,7),pago:quitado,valor_pago:vp}).select().single();
+        if(pgData)PG.push(pgData);
+        if(quitado) msg+=' Aluguel do mês pago ✓';
+        else msg+=` Pagamento parcial: faltam ${fmt(aluguel-vp)}`;
+      }
+    }
+  }
+
+  setSyncing(false);popAll();rPainel();
+  document.getElementById('mv').value='';document.getElementById('mdesc').value='';
+  alert(msg);
 }
 
 
@@ -841,6 +988,72 @@ async function remL(id){
   setSyncing(true);
   await sb.from('lancamentos').delete().eq('id',id);
   L=L.filter(l=>l.id!==id);setSyncing(false);rHist();rPainel();
+}
+
+
+// ── LÓGICA DE DÍVIDA ACUMULADA ────────────────────────────────────────
+function calcDivida(uid){
+  // Retorna {total, meses:[{mes, faltando}]}
+  const u=gU(uid);if(!u)return{total:0,meses:[]};
+  const aluguel=Number(u.aluguel);
+  const mesesComDivida=PG
+    .filter(p=>p.inquilino_id==uid && !p.pago)
+    .map(p=>({mes:p.mes_ano,pago:Number(p.valor_pago||0),faltando:aluguel-Number(p.valor_pago||0)}))
+    .filter(p=>p.faltando>0)
+    .sort((a,b)=>a.mes.localeCompare(b.mes));
+  const total=mesesComDivida.reduce((s,m)=>s+m.faltando,0);
+  return{total,meses:mesesComDivida};
+}
+
+function statusPagMes(uid, mesAno){
+  const u=gU(uid);if(!u)return{status:'pendente',valorPago:0,faltando:Number(u?.aluguel||0)};
+  const aluguel=Number(u.aluguel);
+  const pg=PG.find(p=>p.inquilino_id==uid&&p.mes_ano===mesAno);
+  if(!pg)return{status:'pendente',valorPago:0,faltando:aluguel};
+  if(pg.pago)return{status:'pago',valorPago:aluguel,faltando:0};
+  const vp=Number(pg.valor_pago||0);
+  if(vp>0)return{status:'parcial',valorPago:vp,faltando:aluguel-vp};
+  return{status:'pendente',valorPago:0,faltando:aluguel};
+}
+
+function abrirHistPag(uid){
+  const u=gU(uid);if(!u)return;
+  const aluguel=Number(u.aluguel);
+  // Busca todos os meses com algum registro
+  const mesesComReg=[...new Set(PG.filter(p=>p.inquilino_id==uid).map(p=>p.mes_ano))].sort().reverse();
+  // Inclui meses com lançamentos de aluguel
+  L.filter(l=>l.inquilino_id==uid&&l.categoria==='Aluguel').forEach(l=>{
+    const m=l.data?.slice(0,7);if(m&&!mesesComReg.includes(m))mesesComReg.push(m);
+  });
+  mesesComReg.sort().reverse();
+
+  const divida=calcDivida(uid);
+
+  document.getElementById('mhp-title').textContent=`Pagamentos — ${u.nome} (${u.unidade})`;
+  
+  const rows=mesesComReg.map(m=>{
+    const st=statusPagMes(uid,m);
+    let badge='';
+    if(st.status==='pago') badge=`<span class="badge bg">✓ Pago</span>`;
+    else if(st.status==='parcial') badge=`<span class="badge ba">Parcial — falta ${fmt(st.faltando)}</span>`;
+    else badge=`<span class="badge br">Pendente</span>`;
+    return`<div class="hist-pag-row">
+      <div>
+        <div style="font-weight:600;font-size:13px">${fmtM(m)}</div>
+        <div style="font-size:11px;color:var(--ink4)">Aluguel: ${fmt(aluguel)}${st.valorPago>0&&st.status!=='pago'?` · Pago: ${fmt(st.valorPago)}`:''}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  document.getElementById('mhp-body').innerHTML=`
+    ${divida.total>0?`<div style="background:var(--Rl);border:1px solid var(--Rm);border-radius:var(--rs);padding:11px 14px;margin-bottom:14px;font-size:13px">
+      <div style="font-weight:600;color:var(--R)">Dívida acumulada: ${fmt(divida.total)}</div>
+      <div style="font-size:12px;color:var(--ink4);margin-top:3px">${divida.meses.map(m=>`${fmtM(m.mes)}: falta ${fmt(m.faltando)}`).join(' · ')}</div>
+    </div>`:''}
+    ${rows||'<div style="text-align:center;padding:20px;color:var(--ink4)">Nenhum registro encontrado.</div>'}
+  `;
+  oM('m-hist-pag');
 }
 
 // ── RELATÓRIO ─────────────────────────────────────────
@@ -945,35 +1158,35 @@ const TOUR_STEPS = [
     pos:'center'
   }
 ];
- 
+
 let tourStep = 0;
- 
+
 function tourStart(){
   tourStep = 0;
   document.getElementById('tour-overlay').classList.add('on');
   document.getElementById('help-btn').classList.remove('show');
   tourRender();
 }
- 
+
 function tourSkip(){
   document.getElementById('tour-overlay').classList.remove('on');
   document.getElementById('tour-hl').style.opacity='0';
   document.getElementById('help-btn').classList.add('show');
   localStorage.setItem('if_tour_done','1');
 }
- 
+
 function tourNext(){
   if(tourStep >= TOUR_STEPS.length - 1){ tourSkip(); return; }
   tourStep++;
   tourRender();
 }
- 
+
 function tourRender(){
   const step = TOUR_STEPS[tourStep];
   const total = TOUR_STEPS.length;
   const card = document.getElementById('tour-card');
   const hl = document.getElementById('tour-hl');
- 
+
   // Navega para a tela do passo se necessário
   if(step.nav){
     const navBtns = document.querySelectorAll('.rb');
@@ -981,18 +1194,18 @@ function tourRender(){
     const idx = pages.indexOf(step.nav);
     nav(step.nav, idx >= 0 ? navBtns[idx+1] : null);
   }
- 
+
   // Atualiza conteúdo
   document.getElementById('tour-pill').textContent = `Passo ${tourStep+1} de ${total}`;
   document.getElementById('tour-icon').textContent = step.icon;
   document.getElementById('tour-title').textContent = step.title;
   document.getElementById('tour-text').textContent = step.text;
   document.getElementById('tour-next-btn').textContent = tourStep === total-1 ? '✓ Começar' : 'Próximo →';
- 
+
   // Dots
   const dots = document.getElementById('tour-dots');
   dots.innerHTML = TOUR_STEPS.map((_,i) => `<div class="tour-dot${i===tourStep?' on':''}"></div>`).join('');
- 
+
   // Posiciona card e highlight
   setTimeout(() => {
     if(step.target){
@@ -1016,7 +1229,7 @@ function tourRender(){
     }
   }, 80);
 }
- 
+
 function tourCheckFirst(){
   if(!localStorage.getItem('if_tour_done')){
     setTimeout(tourStart, 800);
@@ -1024,8 +1237,8 @@ function tourCheckFirst(){
     document.getElementById('help-btn').classList.add('show');
   }
 }
- 
- 
+
+
 // ── TUTORIAL ──────────────────────────────────────────────────────────
 const TUTS = [
   {
@@ -1096,28 +1309,28 @@ const TUTS = [
     ]
   },
 ];
- 
+
 let tutIdx = 0;
- 
+
 function abrirTut(idx){
   tutIdx = idx || 0;
   renderTut();
   document.getElementById('tut-overlay').classList.add('on');
 }
- 
+
 function fecharTut(){
   document.getElementById('tut-overlay').classList.remove('on');
   // Marca como visto
   try{ localStorage.setItem('if_tut_visto','1'); }catch(e){}
 }
- 
+
 function stepTut(dir){
   if(dir === 1 && tutIdx >= TUTS.length - 1){ fecharTut(); return; }
   if(dir === -1 && tutIdx <= 0) return;
   tutIdx += dir;
   renderTut();
 }
- 
+
 function renderTut(){
   const t = TUTS[tutIdx];
   const icon = document.getElementById('tut-icon');
@@ -1141,7 +1354,7 @@ function renderTut(){
   const next = document.getElementById('tut-next');
   next.textContent = tutIdx === TUTS.length - 1 ? '✓ Concluir' : 'Próximo →';
 }
- 
+
 function verificarPrimeiroAcesso(){
   try{
     if(!localStorage.getItem('if_tut_visto')){
@@ -1149,9 +1362,64 @@ function verificarPrimeiroAcesso(){
     }
   }catch(e){}
 }
- 
+
 // ── INIT ──────────────────────────────────────────────
 initAuth();
 </script>
+
+<!-- TOUR -->
+<div class="tour-overlay" id="tour-overlay">
+  <div class="tour-backdrop" id="tour-backdrop" onclick="tourSkip()"></div>
+  <div class="tour-highlight" id="tour-hl"></div>
+  <div class="tour-card" id="tour-card">
+    <div class="tour-step-pill" id="tour-pill">Passo 1 de 7</div>
+    <div class="tour-icon" id="tour-icon">👋</div>
+    <div class="tour-title" id="tour-title">Bem-vindo ao ImóvelFlow!</div>
+    <div class="tour-text" id="tour-text">Este é seu sistema de gestão de prédios e inquilinos. Vamos fazer um tour rápido para você conhecer tudo.</div>
+    <div class="tour-footer">
+      <div class="tour-dots" id="tour-dots"></div>
+      <div class="tour-btns">
+        <button class="tour-skip" onclick="tourSkip()">Pular</button>
+        <button class="tour-next" id="tour-next-btn" onclick="tourNext()">Próximo →</button>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="help-btn" id="help-btn" onclick="tourStart()" title="Abrir tutorial">?</button>
+
+
+<!-- BOTÃO DE AJUDA FIXO -->
+<button class="help-btn" onclick="abrirTut(0)" title="Ajuda">?</button>
+
+<!-- TUTORIAL OVERLAY -->
+<div class="tut-overlay" id="tut-overlay">
+  <div class="tut-card">
+    <div class="tut-head">
+      <div class="tut-icon" id="tut-icon"></div>
+      <button class="tut-close" onclick="fecharTut()">✕</button>
+    </div>
+    <div class="tut-body">
+      <div class="tut-title" id="tut-title"></div>
+      <div class="tut-desc" id="tut-desc"></div>
+      <div class="tut-steps" id="tut-steps"></div>
+    </div>
+    <div class="tut-footer">
+      <div class="tut-dots" id="tut-dots"></div>
+      <div class="tut-nav">
+        <button class="tut-skip" id="tut-prev" onclick="stepTut(-1)">← Anterior</button>
+        <button class="btn bp bsm" id="tut-next" onclick="stepTut(1)">Próximo →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Histórico de Pagamentos do Inquilino -->
+<div class="overlay" id="m-hist-pag"><div class="modal" style="max-width:520px">
+  <div class="m-title" id="mhp-title">Histórico de Pagamentos</div>
+  <div id="mhp-body"></div>
+  <div class="m-foot"><button class="btn bg2" onclick="cM('m-hist-pag')">Fechar</button></div>
+</div></div>
+
 </body>
 </html>
