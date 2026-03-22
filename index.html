@@ -879,6 +879,277 @@ function gerarRel(){
 function oM(id){document.getElementById(id).classList.add('on')}
 function cM(id){document.getElementById(id).classList.remove('on')}
 
+
+// ── TOUR GUIADO ───────────────────────────────────────
+const TOUR_STEPS = [
+  {
+    icon:'👋',
+    title:'Bem-vindo ao ImóvelFlow!',
+    text:'Este é seu sistema de gestão de prédios e inquilinos. Vamos fazer um tour rápido — menos de 2 minutos — para você aprender tudo.',
+    target:null,
+    pos:'center'
+  },
+  {
+    icon:'▦',
+    title:'Painel',
+    text:'Aqui você vê o resumo geral: total de entradas, saídas, saldo do mês e quais inquilinos ainda não pagaram. Use os filtros no topo para ver por prédio ou por mês.',
+    target:'.rb:nth-child(2)',
+    pos:'right',
+    nav:'painel'
+  },
+  {
+    icon:'⌂',
+    title:'Prédios & Inquilinos',
+    text:'Cadastre seus prédios e os inquilinos de cada unidade. Para cada inquilino você pode registrar o valor do aluguel, dia de vencimento e marcar se o mês foi pago ou não.',
+    target:'.rb:nth-child(3)',
+    pos:'right',
+    nav:'predios'
+  },
+  {
+    icon:'↑↓',
+    title:'Enviar Extrato',
+    text:'Cole o texto copiado do seu extrato bancário aqui. O sistema identifica automaticamente as entradas e saídas. Você revisa, ajusta as categorias e importa com um clique.',
+    target:'.rb:nth-child(5)',
+    pos:'right',
+    nav:'extrato'
+  },
+  {
+    icon:'✎',
+    title:'Lançamento Manual',
+    text:'Para registrar uma entrada ou saída avulsa sem precisar do extrato. Escolha o tipo, o prédio, a categoria, o valor e a data.',
+    target:'.rb:nth-child(6)',
+    pos:'right',
+    nav:'manual'
+  },
+  {
+    icon:'☰',
+    title:'Histórico',
+    text:'Lista completa de todos os lançamentos. Filtre por prédio, tipo (entrada ou saída) ou categoria. Para remover um lançamento, clique no ✕ na linha correspondente.',
+    target:'.rb:nth-child(7)',
+    pos:'right',
+    nav:'hist'
+  },
+  {
+    icon:'📄',
+    title:'Relatório Mensal',
+    text:'Gera um relatório completo com entradas, saídas, saldo e lista de aluguéis em aberto. Selecione o prédio e o mês, clique em Gerar e depois em Imprimir para salvar em PDF.',
+    target:'.rb:nth-child(9)',
+    pos:'right',
+    nav:'rel'
+  },
+  {
+    icon:'✅',
+    title:'Pronto! Você já sabe tudo.',
+    text:'Comece cadastrando seus prédios e inquilinos. Clique no botão "?" no canto inferior direito a qualquer momento para rever este tutorial.',
+    target:null,
+    pos:'center'
+  }
+];
+ 
+let tourStep = 0;
+ 
+function tourStart(){
+  tourStep = 0;
+  document.getElementById('tour-overlay').classList.add('on');
+  document.getElementById('help-btn').classList.remove('show');
+  tourRender();
+}
+ 
+function tourSkip(){
+  document.getElementById('tour-overlay').classList.remove('on');
+  document.getElementById('tour-hl').style.opacity='0';
+  document.getElementById('help-btn').classList.add('show');
+  localStorage.setItem('if_tour_done','1');
+}
+ 
+function tourNext(){
+  if(tourStep >= TOUR_STEPS.length - 1){ tourSkip(); return; }
+  tourStep++;
+  tourRender();
+}
+ 
+function tourRender(){
+  const step = TOUR_STEPS[tourStep];
+  const total = TOUR_STEPS.length;
+  const card = document.getElementById('tour-card');
+  const hl = document.getElementById('tour-hl');
+ 
+  // Navega para a tela do passo se necessário
+  if(step.nav){
+    const navBtns = document.querySelectorAll('.rb');
+    const pages = ['painel','predios','extrato','manual','hist','rel'];
+    const idx = pages.indexOf(step.nav);
+    nav(step.nav, idx >= 0 ? navBtns[idx+1] : null);
+  }
+ 
+  // Atualiza conteúdo
+  document.getElementById('tour-pill').textContent = `Passo ${tourStep+1} de ${total}`;
+  document.getElementById('tour-icon').textContent = step.icon;
+  document.getElementById('tour-title').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-next-btn').textContent = tourStep === total-1 ? '✓ Começar' : 'Próximo →';
+ 
+  // Dots
+  const dots = document.getElementById('tour-dots');
+  dots.innerHTML = TOUR_STEPS.map((_,i) => `<div class="tour-dot${i===tourStep?' on':''}"></div>`).join('');
+ 
+  // Posiciona card e highlight
+  setTimeout(() => {
+    if(step.target){
+      const el = document.querySelector(step.target);
+      if(el){
+        const r = el.getBoundingClientRect();
+        // Highlight
+        hl.style.cssText = `left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px;opacity:1`;
+        // Card à direita do elemento
+        const cardW = 360;
+        let left = r.right + 18;
+        let top = Math.max(16, r.top + r.height/2 - 140);
+        if(left + cardW > window.innerWidth - 16) left = r.left - cardW - 18;
+        if(top + 300 > window.innerHeight) top = window.innerHeight - 316;
+        card.style.cssText = `left:${left}px;top:${top}px;right:auto;bottom:auto;transform:none`;
+      }
+    } else {
+      // Centralizado
+      hl.style.opacity = '0';
+      card.style.cssText = 'left:50%;top:50%;transform:translate(-50%,-50%);right:auto;bottom:auto';
+    }
+  }, 80);
+}
+ 
+function tourCheckFirst(){
+  if(!localStorage.getItem('if_tour_done')){
+    setTimeout(tourStart, 800);
+  } else {
+    document.getElementById('help-btn').classList.add('show');
+  }
+}
+ 
+ 
+// ── TUTORIAL ──────────────────────────────────────────────────────────
+const TUTS = [
+  {
+    icon:'▦', cor:'#edf2fc', iconCor:'#1a42a8',
+    titulo:'Bem-vindo ao ImóvelFlow!',
+    desc:'Este é o seu sistema de gestão de prédios e inquilinos. Vamos fazer um tour rápido pelas principais áreas para você começar a usar com confiança.',
+    passos:[
+      {t:'Painel', d:'Visão geral de entradas, saídas, saldo e quem não pagou este mês.'},
+      {t:'Prédios & Inquilinos', d:'Cadastre seus prédios e os inquilinos de cada unidade.'},
+      {t:'Extrato', d:'Cole o texto do extrato bancário e importe os lançamentos automaticamente.'},
+      {t:'Lançamento Manual', d:'Registre entradas e saídas avulsas sem precisar de extrato.'},
+      {t:'Relatório Mensal', d:'Gere um relatório completo por prédio com um clique.'},
+    ]
+  },
+  {
+    icon:'⌂', cor:'#eaf4ee', iconCor:'#1d6b42',
+    titulo:'Prédios & Inquilinos',
+    desc:'O primeiro passo é cadastrar seus prédios e depois adicionar os inquilinos de cada unidade.',
+    passos:[
+      {t:'Cadastrar prédio', d:'Clique em <strong>Prédios & Inquilinos</strong> no menu → aba <strong>Prédios</strong> → botão <strong>+ Novo prédio</strong>. Informe o nome, endereço e escolha uma cor de identificação.'},
+      {t:'Cadastrar inquilino', d:'Na aba <strong>Inquilinos</strong>, selecione o prédio e clique em <strong>+ Novo inquilino</strong>. Preencha o nome, unidade (ex: Ap. 101), valor do aluguel e dia de vencimento.'},
+      {t:'Marcar pagamento', d:'Na aba <strong>Inquilinos</strong>, cada unidade tem um botão <strong>Pago / Pendente</strong>. Clique para alternar o status do mês atual.'},
+      {t:'Lançar despesa de unidade', d:'Clique em <strong>+ Despesa</strong> no card do inquilino para registrar um gasto vinculado àquela unidade específica.'},
+    ]
+  },
+  {
+    icon:'↑↓', cor:'#edf2fc', iconCor:'#1a42a8',
+    titulo:'Enviar Extrato',
+    desc:'A forma mais rápida de registrar vários lançamentos de uma vez. Cole o texto do extrato e o sistema identifica as transações automaticamente.',
+    passos:[
+      {t:'Copiar o extrato', d:'No site ou app do seu banco, selecione o extrato do período, copie o texto (Ctrl+C) e cole no campo de texto do sistema.'},
+      {t:'Identificar transações', d:'Clique em <strong>🔍 Identificar transações</strong>. O sistema vai listar todas as entradas e saídas encontradas no texto.'},
+      {t:'Revisar e corrigir', d:'Confira se o tipo (entrada/saída) e a categoria estão corretos. Você pode alterar a categoria de cada linha antes de importar.'},
+      {t:'Selecionar o prédio', d:'Escolha a qual prédio pertencem os lançamentos e clique em <strong>✓ Importar selecionados</strong>.'},
+    ]
+  },
+  {
+    icon:'✎', cor:'#fdf6e0', iconCor:'#8a5800',
+    titulo:'Lançamento Manual',
+    desc:'Use quando quiser registrar uma entrada ou saída avulsa, sem precisar de extrato.',
+    passos:[
+      {t:'Tipo', d:'Escolha <strong>Entrada</strong> para recebimentos (ex: aluguel recebido) ou <strong>Saída</strong> para pagamentos (ex: conta de água).'},
+      {t:'Prédio e categoria', d:'Selecione o prédio, a categoria do lançamento e, se quiser, vincule a uma unidade específica.'},
+      {t:'Valor e data', d:'Informe o valor em reais e a data do lançamento.'},
+      {t:'Salvar', d:'Clique em <strong>+ Salvar</strong>. O lançamento aparece imediatamente no Painel e no Histórico.'},
+    ]
+  },
+  {
+    icon:'☰', cor:'#f3f0e8', iconCor:'#3a3628',
+    titulo:'Histórico',
+    desc:'Todos os lançamentos em um só lugar, com filtros para encontrar qualquer registro rapidamente.',
+    passos:[
+      {t:'Filtrar por prédio', d:'Use o seletor de prédio para ver apenas os lançamentos de um prédio específico.'},
+      {t:'Filtrar por tipo', d:'Filtre para ver só entradas, só saídas, ou os dois juntos.'},
+      {t:'Filtrar por categoria', d:'Encontre todos os lançamentos de uma categoria específica, como "Água" ou "Aluguel".'},
+      {t:'Excluir lançamento', d:'Clique no botão <strong>✕</strong> no final de qualquer linha para remover um lançamento. A ação é permanente.'},
+    ]
+  },
+  {
+    icon:'📄', cor:'#edf2fc', iconCor:'#1a42a8',
+    titulo:'Relatório Mensal',
+    desc:'Gere um resumo financeiro completo de qualquer prédio em qualquer mês, pronto para imprimir.',
+    passos:[
+      {t:'Selecionar período', d:'Escolha o prédio e o mês desejado nos seletores no topo da página.'},
+      {t:'Gerar', d:'Clique em <strong>Gerar</strong>. O relatório mostra todas as entradas, saídas por categoria, saldo do período e lista de aluguéis não pagos.'},
+      {t:'Imprimir ou salvar', d:'Clique em <strong>🖨 Imprimir</strong> para imprimir ou salvar como PDF. O menu e os botões desaparecem automaticamente na impressão.'},
+      {t:'Filtros globais', d:'Os seletores de prédio e mês no topo da tela também filtram o Painel — útil para ver o resumo de um mês específico.'},
+    ]
+  },
+];
+ 
+let tutIdx = 0;
+ 
+function abrirTut(idx){
+  tutIdx = idx || 0;
+  renderTut();
+  document.getElementById('tut-overlay').classList.add('on');
+}
+ 
+function fecharTut(){
+  document.getElementById('tut-overlay').classList.remove('on');
+  // Marca como visto
+  try{ localStorage.setItem('if_tut_visto','1'); }catch(e){}
+}
+ 
+function stepTut(dir){
+  if(dir === 1 && tutIdx >= TUTS.length - 1){ fecharTut(); return; }
+  if(dir === -1 && tutIdx <= 0) return;
+  tutIdx += dir;
+  renderTut();
+}
+ 
+function renderTut(){
+  const t = TUTS[tutIdx];
+  const icon = document.getElementById('tut-icon');
+  icon.textContent = t.icon;
+  icon.style.background = t.cor;
+  icon.style.color = t.iconCor;
+  document.getElementById('tut-title').textContent = t.titulo;
+  document.getElementById('tut-desc').textContent = t.desc;
+  document.getElementById('tut-steps').innerHTML = t.passos.map((p,i) =>
+    `<div class="tut-step">
+      <div class="tut-step-num">${i+1}</div>
+      <div class="tut-step-txt"><strong>${p.t}:</strong> ${p.d}</div>
+    </div>`
+  ).join('');
+  // Dots
+  document.getElementById('tut-dots').innerHTML = TUTS.map((_,i) =>
+    `<div class="tut-dot${i===tutIdx?' on':''}" onclick="abrirTut(${i})"></div>`
+  ).join('');
+  // Botões
+  document.getElementById('tut-prev').style.visibility = tutIdx === 0 ? 'hidden' : 'visible';
+  const next = document.getElementById('tut-next');
+  next.textContent = tutIdx === TUTS.length - 1 ? '✓ Concluir' : 'Próximo →';
+}
+ 
+function verificarPrimeiroAcesso(){
+  try{
+    if(!localStorage.getItem('if_tut_visto')){
+      setTimeout(()=>abrirTut(0), 800);
+    }
+  }catch(e){}
+}
+ 
 // ── INIT ──────────────────────────────────────────────
 initAuth();
 </script>
