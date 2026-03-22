@@ -980,7 +980,7 @@ function rHist(){
   if(!list.length){b.innerHTML='<tr><td colspan="8"><div class="es">Nenhum lançamento.</div></td></tr>';return}
   b.innerHTML=list.map(l=>{
     const pr=gP(l.predio_id),un=l.unidade;
-    return`<tr><td>${fmtD(l.data)}</td><td>${pr?`<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:${pr.cor||'#1a42a8'};display:inline-block"></span>${pr.nome}</span>`:'—'}</td><td><span class="badge ${l.tipo==='entrada'?'bg':'br'}">${l.tipo==='entrada'?'Entrada':'Saída'}</span></td><td><span class="badge bb">${l.categoria||'—'}</span></td><td style="color:var(--ink4)">${un||'—'}</td><td style="color:var(--ink4);font-size:12px">${l.descricao||'—'}</td><td style="text-align:right" class="${l.tipo==='entrada'?'inv':'outv'}">${l.tipo==='entrada'?'+':'-'}${fmt(l.valor)}</td><td><button class="delb" onclick="remL(${l.id})">✕</button></td></tr>`;
+    return`<tr><td>${fmtD(l.data)}</td><td>${pr?`<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:${pr.cor||'#1a42a8'};display:inline-block"></span>${pr.nome}</span>`:'—'}</td><td><span class="badge ${l.tipo==='entrada'?'bg':'br'}">${l.tipo==='entrada'?'Entrada':'Saída'}</span></td><td><span class="badge bb">${l.categoria||'—'}</span></td><td style="color:var(--ink4)">${un||'—'}</td><td style="color:var(--ink4);font-size:12px">${l.descricao||'—'}</td><td style="text-align:right" class="${l.tipo==='entrada'?'inv':'outv'}">${l.tipo==='entrada'?'+':'-'}${fmt(l.valor)}</td><td style="display:flex;gap:4px"><button class="btn bg2 bxs" onclick="abrirEditLanc(${l.id})">✎</button><button class="delb" onclick="remL(${l.id})">✕</button></td></tr>`;
   }).join('');
 }
 async function remL(id){
@@ -1054,6 +1054,63 @@ function abrirHistPag(uid){
     ${rows||'<div style="text-align:center;padding:20px;color:var(--ink4)">Nenhum registro encontrado.</div>'}
   `;
   oM('m-hist-pag');
+}
+
+
+// ── EDIÇÃO DE LANÇAMENTO ──────────────────────────────────────────────
+function abrirEditLanc(id){
+  const l=L.find(x=>x.id==id);if(!l)return;
+  document.getElementById('el-id').value=id;
+  document.getElementById('el-tipo').value=l.tipo;
+  elCats();
+  document.getElementById('el-predio').innerHTML=P.map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
+  document.getElementById('el-predio').value=l.predio_id;
+  elUnits(l.predio_id);
+  document.getElementById('el-cat').value=l.categoria;
+  document.getElementById('el-unidade').value=l.inquilino_id||'';
+  document.getElementById('el-valor').value=l.valor;
+  document.getElementById('el-data').value=l.data;
+  document.getElementById('el-desc').value=l.descricao||'';
+  oM('m-edit-lanc');
+}
+function elCats(){
+  const t=document.getElementById('el-tipo').value;
+  const CE2=['Aluguel','Condomínio','Multa/Juros','Outros recebimentos'];
+  const CS2=['Água','Luz','Manutenção','Limpeza','Segurança','IPTU','Seguro','Administração','Outros'];
+  document.getElementById('el-cat').innerHTML=(t==='entrada'?CE2:CS2).map(c=>`<option>${c}</option>`).join('');
+}
+function elUnits(pid){
+  const units=U.filter(u=>u.predio_id==pid);
+  document.getElementById('el-unidade').innerHTML='<option value="">— Geral —</option>'+units.map(u=>`<option value="${u.id}">${u.unidade} – ${u.nome}</option>`).join('');
+}
+async function salEditLanc(){
+  const id=document.getElementById('el-id').value;
+  const l=L.find(x=>x.id==id);if(!l)return;
+  const v=parseFloat(document.getElementById('el-valor').value);
+  const d=document.getElementById('el-data').value;
+  if(!v||v<=0||!d){alert('Preencha valor e data.');return}
+  const uid=document.getElementById('el-unidade').value;
+  const uObj=uid?gU(uid):null;
+  const obj={
+    tipo:document.getElementById('el-tipo').value,
+    predio_id:parseInt(document.getElementById('el-predio').value),
+    inquilino_id:uid?parseInt(uid):null,
+    categoria:document.getElementById('el-cat').value,
+    unidade:uObj?uObj.unidade:null,
+    valor:v,
+    data:d,
+    descricao:document.getElementById('el-desc').value.trim()
+  };
+  setSyncing(true);
+  const{error}=await sb.from('lancamentos').update(obj).eq('id',id);
+  if(!error){
+    const i=L.findIndex(x=>x.id==id);
+    if(i>=0)L[i]={...L[i],...obj};
+  }
+  setSyncing(false);
+  cM('m-edit-lanc');
+  rHist();rPainel();popAll();
+  alert('✓ Lançamento atualizado!');
 }
 
 // ── RELATÓRIO ─────────────────────────────────────────
@@ -1231,10 +1288,9 @@ function tourRender(){
 }
 
 function tourCheckFirst(){
+  document.getElementById('help-btn').classList.add('show');
   if(!localStorage.getItem('if_tour_done')){
-    setTimeout(tourStart, 800);
-  } else {
-    document.getElementById('help-btn').classList.add('show');
+    setTimeout(tourStart, 1000);
   }
 }
 
@@ -1417,6 +1473,32 @@ initAuth();
   <div class="m-title" id="mhp-title">Histórico de Pagamentos</div>
   <div id="mhp-body"></div>
   <div class="m-foot"><button class="btn bg2" onclick="cM('m-hist-pag')">Fechar</button></div>
+</div></div>
+
+
+<!-- Modal Editar Lançamento -->
+<div class="overlay" id="m-edit-lanc"><div class="modal">
+  <div class="m-title">Editar Lançamento</div>
+  <input type="hidden" id="el-id">
+  <div class="r2">
+    <div class="field"><label class="lbl">Tipo</label>
+      <select id="el-tipo" onchange="elCats()">
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select>
+    </div>
+    <div class="field"><label class="lbl">Prédio</label><select id="el-predio"></select></div>
+  </div>
+  <div class="r2">
+    <div class="field"><label class="lbl">Categoria</label><select id="el-cat"></select></div>
+    <div class="field"><label class="lbl">Unidade</label><select id="el-unidade"><option value="">— Geral —</option></select></div>
+  </div>
+  <div class="r2">
+    <div class="field"><label class="lbl">Valor (R$)</label><input type="number" id="el-valor" min="0" step="0.01"></div>
+    <div class="field"><label class="lbl">Data</label><input type="date" id="el-data"></div>
+  </div>
+  <div class="field"><label class="lbl">Descrição</label><input type="text" id="el-desc" placeholder="Detalhes..."></div>
+  <div class="m-foot"><button class="btn bg2" onclick="cM('m-edit-lanc')">Cancelar</button><button class="btn bp" onclick="salEditLanc()">Salvar alterações</button></div>
 </div></div>
 
 </body>
