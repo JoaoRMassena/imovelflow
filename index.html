@@ -202,8 +202,8 @@ tr:hover td{background:var(--w0)}
 .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--Bl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--acc)}
 
 /* ── TOUR ── */
-.tour-overlay{position:fixed;inset:0;z-index:500;pointer-events:none}
-.tour-overlay.on{pointer-events:all}
+.tour-overlay{position:fixed;inset:0;z-index:500;pointer-events:none;display:none}
+.tour-overlay.on{pointer-events:all;display:block}
 .tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;transition:opacity .3s}
 .tour-card{position:fixed;z-index:501;background:#fff;border-radius:16px;padding:24px 26px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:up .25s ease}
 .tour-step-pill{font-size:11px;font-weight:700;color:var(--acc);background:var(--Bl);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;letter-spacing:.4px}
