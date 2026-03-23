@@ -205,7 +205,7 @@ tr:hover td{background:var(--w0)}
 .tour-overlay{position:fixed;inset:0;z-index:500;pointer-events:none;display:none}
 .tour-overlay.on{pointer-events:all;display:block}
 .tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;transition:opacity .3s}
-.tour-card{position:fixed;z-index:501;background:#fff;border-radius:16px;padding:24px 26px;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:up .25s ease}
+.tour-card{position:fixed;z-index:502;background:#fff;border-radius:16px;padding:24px 26px;max-width:360px;width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:up .25s ease}
 .tour-step-pill{font-size:11px;font-weight:700;color:var(--acc);background:var(--Bl);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;letter-spacing:.4px}
 .tour-icon{font-size:32px;margin-bottom:10px}
 .tour-title{font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin-bottom:8px;letter-spacing:-.2px}
@@ -1271,18 +1271,26 @@ function tourRender(){
         const r = el.getBoundingClientRect();
         // Highlight
         hl.style.cssText = `left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px;opacity:1`;
-        // Card à direita do elemento
-        const cardW = 360;
-        let left = r.right + 18;
-        let top = Math.max(16, r.top + r.height/2 - 140);
-        if(left + cardW > window.innerWidth - 16) left = r.left - cardW - 18;
-        if(top + 300 > window.innerHeight) top = window.innerHeight - 316;
-        card.style.cssText = `left:${left}px;top:${top}px;right:auto;bottom:auto;transform:none`;
+        // Card posicionado de forma responsiva
+        const cardW = Math.min(360, window.innerWidth * 0.9);
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        // Em mobile (< 600px), sempre centraliza
+        if(vw < 600){
+          card.style.cssText = `left:50%;top:50%;transform:translate(-50%,-50%);right:auto;bottom:auto;max-width:${cardW}px`;
+        } else {
+          let left = r.right + 18;
+          let top = Math.max(16, r.top + r.height/2 - 140);
+          if(left + cardW > vw - 16) left = r.left - cardW - 18;
+          if(left < 16) left = vw/2 - cardW/2;
+          if(top + 300 > vh) top = vh - 316;
+          card.style.cssText = `left:${left}px;top:${top}px;right:auto;bottom:auto;transform:none;max-width:${cardW}px`;
+        }
       }
     } else {
       // Centralizado
       hl.style.opacity = '0';
-      card.style.cssText = 'left:50%;top:50%;transform:translate(-50%,-50%);right:auto;bottom:auto';
+      card.style.cssText = 'left:50%;top:50%;transform:translate(-50%,-50%);right:auto;bottom:auto;max-width:min(360px,90vw)';
     }
   }, 80);
 }
